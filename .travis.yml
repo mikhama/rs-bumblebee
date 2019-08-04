@@ -1,0 +1,25 @@
+language: node_js
+node_js:
+  - "10"
+install:
+  - npm install
+stages:
+  - "Quality gates"
+  - "Build"
+  - name: "Delivery"
+    if: type != pull_request
+        AND branch = master
+jobs:
+  include:
+    - stage: "Quality gates"
+      name: "Linter"
+      script: npm run lint
+    - script: npm test
+      name: "Unit Tests"
+    - stage: "Build"
+      script: npm run build
+    - stage: "Delivery"
+      script: echo "Delivery should run here"
+branches:
+  only:
+    - master
