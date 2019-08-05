@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { catcher } = require('../lib/common');
 
-const { TIMESTAMP_FILE_NAME } = require('../constants');
+const { TIMESTAMP_FILE_NAME } = require('../constants/discord-bridge');
 
 const PATH_TO_FILE = path.join('./', __dirname, TIMESTAMP_FILE_NAME);
 

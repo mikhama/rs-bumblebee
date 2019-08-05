@@ -1,12 +1,11 @@
 const moment = require('moment-timezone');
 const { catcher } = require('../lib/common');
 const { filterDiscordMessage } = require('./filters');
-
 const {
   TIMEZONE,
   TIME_FORMAT,
   TELEGRAM_PARSE_MODE,
-} = require('../constants');
+} = require('../constants/discord-bridge');
 
 const formatMessage = ({
   username, channelName, content, createdTimestamp, editedTimestamp,
@@ -14,7 +13,7 @@ const formatMessage = ({
   const timestamp = moment.tz(editedTimestamp || createdTimestamp, TIMEZONE);
   const time = timestamp.format(TIME_FORMAT);
 
-  return `${time}\n *${username}* said in channel *${channelName}* that\n\n ${content}`;
+  return `${time}\n *${username}* said in channel *${channelName}* that\n\n${content}`;
 };
 
 module.exports.sendMessageToTelegram = catcher(async ({

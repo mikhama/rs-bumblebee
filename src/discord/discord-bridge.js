@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const moment = require('moment-timezone');
 const { catcher } = require('../lib/common');
 const events = require('./events');
-const { LOCALE } = require('../constants');
+const { LOCALE } = require('../constants/discord-bridge');
 
 moment.locale(LOCALE);
 

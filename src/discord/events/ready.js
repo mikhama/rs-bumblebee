@@ -2,17 +2,24 @@ const { saveTime, readTime } = require('../time-logger');
 const {
   getChannel, getMessages, sendMessageToTelegram, telegramActions,
 } = require('../utils');
+const defaults = require('../../constants/defaults');
 
 module.exports = ({
   client, telegramBot, store, channelNames,
 }) => async () => {
+  const limit = Number(process.env.LIMIT_INITIAL_MESSAGES_COUNT
+    || defaults.LIMIT_INITIAL_MESSAGES_COUNT);
+
+  const pause = Number(process.env.PAUSE_BETWEEN_TELEGRAM_SENDS
+    || defaults.PAUSE_BETWEEN_TELEGRAM_SENDS);
+
   global.console.log('Discord client is listening...');
 
   const channels = await Promise.all(channelNames
     .map(channel => getChannel(client, channel)));
 
   const messages = (await Promise.all(channels
-    .map(channel => getMessages(channel, 5))))
+    .map(channel => getMessages(channel, limit))))
     .reduce((acc, cur) => acc.concat(cur), []);
 
   const savedTimestamp = (await readTime()).timestamp;
@@ -23,9 +30,13 @@ module.exports = ({
     });
 
   messagesAfterTimestamp.reverse();
-  messagesAfterTimestamp.forEach(message => sendMessageToTelegram({
-    telegramBot, store, message, action: telegramActions.SEND,
-  }));
+  await Promise.all(messagesAfterTimestamp
+    .map((message, index) => new Promise(resolve => setTimeout(async () => {
+      await sendMessageToTelegram({
+        telegramBot, store, message, action: telegramActions.SEND,
+      });
+      resolve();
+    }, pause * index))));
 
   global.console.log('MESSAGES WERE SENT =>', messagesAfterTimestamp);
 
