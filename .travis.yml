@@ -19,7 +19,10 @@ jobs:
     - stage: "Build"
       script: npm run build
     - stage: "Delivery"
-      script: echo "Delivery should run here"
+      script: npm run deploy
 branches:
   only:
     - master
+addons:
+  ssh_known_hosts:
+  - 68.183.2.140
