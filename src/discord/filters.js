@@ -15,47 +15,23 @@ const replaceMarkdownSymbols = (message) => {
   return newMessage;
 };
 
-const replaceUserIds = (message, mentions) => {
-  let newMessage = message;
-
-  mentions.forEach(({ id, username }) => {
-    const userMentionRegexp = new RegExp(`<@!${id}>`, 'g');
-    newMessage = newMessage.replace(userMentionRegexp, `_@${username}_`);
-  });
-
-  return newMessage;
-};
-
-const replaceChannelIds = (message, mentions) => {
+const replaceIds = ({
+  message, mentions, idPrefix, namePrefix,
+}) => {
   let newMessage = message;
 
   mentions.forEach(({ id, name }) => {
-    const channelMentionRegexp = new RegExp(`<#${id}>`, 'g');
-    newMessage = newMessage.replace(channelMentionRegexp, `_#${name}_`);
+    const mentionRegexp = new RegExp(`<${idPrefix}${id}>`, 'g');
+    newMessage = newMessage.replace(mentionRegexp, `_${namePrefix}${name}_`);
   });
 
   return newMessage;
 };
 
-const filterChannelMentions = mentions => [...mentions]
-  .map(([id, channel]) => {
-    const { name } = channel;
-
-    return {
-      id,
-      name,
-    };
-  });
-
-const filterUsersMentions = mentions => [...mentions]
-  .map(([id, user]) => {
-    const { username, discriminator } = user;
-
-    return {
-      id,
-      username,
-      discriminator,
-    };
+const filterMentions = mentions => [...mentions]
+  .map(([id, subject]) => {
+    const name = subject.username || subject.name;
+    return { id, name };
   });
 
 module.exports.filterDiscordMessage = (message) => {
@@ -82,14 +58,35 @@ module.exports.filterDiscordMessage = (message) => {
   const lastMessageId = channel.lastMessageID;
   const userId = author.id;
 
+  const replaces = [
+    {
+      idPrefix: '#',
+      namePrefix: '#',
+      mentionsArr: filterMentions(mentions.channels),
+    },
+    {
+      idPrefix: '@!',
+      namePrefix: '@',
+      mentionsArr: filterMentions(mentions.users),
+    },
+    {
+      idPrefix: '@&',
+      namePrefix: '@',
+      mentionsArr: filterMentions(mentions.roles),
+    },
+  ];
 
-  let contentWithReplacedChars = replaceMarkdownSymbols(content);
+  let newContent = content;
+  replaces.forEach(({ mentionsArr, idPrefix, namePrefix }) => {
+    newContent = replaceIds({
+      idPrefix,
+      namePrefix,
+      message: newContent,
+      mentions: mentionsArr,
+    });
+  });
 
-  const channelMentions = filterChannelMentions(mentions.channels);
-  contentWithReplacedChars = replaceChannelIds(contentWithReplacedChars, channelMentions);
-
-  const usersMentions = filterUsersMentions(mentions.users);
-  contentWithReplacedChars = replaceUserIds(contentWithReplacedChars, usersMentions);
+  newContent = replaceMarkdownSymbols(newContent);
 
   return {
     id,
@@ -102,6 +99,6 @@ module.exports.filterDiscordMessage = (message) => {
     avatar,
     createdTimestamp,
     editedTimestamp,
-    content: contentWithReplacedChars,
+    content: newContent,
   };
 };
