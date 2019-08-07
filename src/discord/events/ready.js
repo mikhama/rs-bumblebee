@@ -15,11 +15,12 @@ module.exports = ({
 
   global.console.log('Discord client is listening...');
 
-  const channels = await Promise.all(channelNames
-    .map(channel => getChannel(client, channel)));
+  const channels = (await Promise.all(channelNames
+    .map(channel => getChannel(client, channel))))
+    .filter(channel => channel);
 
-  const messages = (await Promise.all(channels
-    .map(channel => getMessages(channel, limit))))
+  const messages = channels
+    .map(channel => getMessages(channel, limit))
     .reduce((acc, cur) => acc.concat(cur), []);
 
   const savedTimestamp = (await readTime()).timestamp;
