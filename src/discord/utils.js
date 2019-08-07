@@ -1,3 +1,4 @@
+const punycode = require('punycode');
 const moment = require('moment-timezone');
 const { catcher } = require('../lib/common');
 const { filterDiscordMessage } = require('./filters');
@@ -48,7 +49,8 @@ module.exports.telegramActions = {
 };
 
 module.exports.getChannel = catcher(
-  (client, channelName) => client.channels.find(channel => channel.name === channelName),
+  (client, channelName) => client.channels
+    .find(channel => punycode.encode(channel.name) === punycode.encode(channelName)),
 );
 
 module.exports.getMessages = catcher(async (channel, limit) => {
