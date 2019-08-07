@@ -1,3 +1,10 @@
+const escapeMarkdownCharacters = (message) => {
+  // TODO: Think how to improve the escaping rules. https://stackoverflow.com/questions/40626896/telegram-does-not-escape-some-markdown-characters
+  const underscorRegexp = /_/g;
+
+  return message.replace(underscorRegexp, '\\_');
+};
+
 const replaceMarkdownSymbols = (message) => {
   const discordBoldRegexp = new RegExp('\\*{2}', 'g');
   const discordItalicRegexp = new RegExp('\\*', 'g');
@@ -76,7 +83,8 @@ module.exports.filterDiscordMessage = (message) => {
     },
   ];
 
-  let newContent = content;
+  let newContent = escapeMarkdownCharacters(content);
+
   replaces.forEach(({ mentionsArr, idPrefix, namePrefix }) => {
     newContent = replaceIds({
       idPrefix,

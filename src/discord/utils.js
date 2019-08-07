@@ -22,30 +22,48 @@ module.exports.sendMessageToTelegram = catcher(async ({
 }) => {
   const { TELEGRAM_CHANNEL_ID } = process.env;
 
-  const telegramMessage = await action({
-    messageId,
-    bot: telegramBot,
-    channelId: TELEGRAM_CHANNEL_ID,
-    message: formatMessage(message),
-  });
+  let telegramMessage;
+  try {
+    telegramMessage = await action({
+      messageId,
+      bot: telegramBot,
+      channelId: TELEGRAM_CHANNEL_ID,
+      message: formatMessage(message),
+      parseMode: TELEGRAM_PARSE_MODE,
+    });
+  } catch (err) {
+    global.console.log('Error =>', err.message);
+
+    telegramMessage = await action({
+      messageId,
+      bot: telegramBot,
+      channelId: TELEGRAM_CHANNEL_ID,
+      message: formatMessage(message),
+      parseMode: null,
+    });
+  }
+
   const telegramMessageId = telegramMessage.message_id;
 
   store.set(message.id, { telegramMessageId, message });
 });
 
 module.exports.telegramActions = {
-  SEND: ({ bot, channelId, message }) => bot
-    .sendMessage(channelId, message, { parse_mode: TELEGRAM_PARSE_MODE }),
-  DELETE: ({ bot, channelId, messageId }) => bot
-    .deleteMessage(channelId, messageId),
+  SEND: ({
+    bot, channelId, message, parseMode,
+  }) => bot.sendMessage(channelId, message, { parse_mode: parseMode }),
+
+  DELETE: ({
+    bot, channelId, messageId,
+  }) => bot.deleteMessage(channelId, messageId),
+
   EDIT: ({
-    bot, channelId, message, messageId,
-  }) => bot
-    .editMessageText(message, {
-      chat_id: channelId,
-      message_id: messageId,
-      parse_mode: TELEGRAM_PARSE_MODE,
-    }),
+    bot, channelId, message, messageId, parseMode,
+  }) => bot.editMessageText(message, {
+    chat_id: channelId,
+    message_id: messageId,
+    parse_mode: parseMode,
+  }),
 };
 
 module.exports.getChannel = catcher(
