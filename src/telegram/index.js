@@ -1,15 +1,9 @@
-const TelegramBot = require('node-telegram-bot-api');
+const { createClient, listen } = require('./telegram-bot');
 
-module.exports = () => {
-  const { TELEGRAM_TOKEN } = process.env;
+module.exports = async () => {
+  const client = await createClient();
 
-  const telegram = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
+  listen(client);
 
-  // TODO: make listeners for telegram bot
-  // listen(client);
-  // telegram.onText(/\/start/, (msg) => {
-  //  console.log(msg.chat.id);
-  // });
-
-  return telegram;
+  return client;
 };

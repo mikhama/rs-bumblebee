@@ -15,14 +15,16 @@ module.exports.createClient = catcher(async () => {
   return client;
 });
 
-module.exports.listen = (client, telegramBot) => {
+module.exports.listen = catcher(async (client, telegram) => {
   const { DISCORD_CHANNEL_NAMES } = process.env;
   const channelNames = DISCORD_CHANNEL_NAMES.split(',');
   const store = new Map();
+
+  const telegramBot = await telegram;
 
   Object.keys(events).forEach((eventName) => {
     client.on(eventName, catcher(events[eventName]({
       client, telegramBot, store, channelNames,
     })));
   });
-};
+});

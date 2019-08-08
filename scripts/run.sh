@@ -1,5 +1,5 @@
 #!/bin/bash
-killall node
+screen -S rs-bumblebee -p 0 -X quit
 cd ~/rs-bumblebee
-node rs-bumblebee &
+screen -dmS rs-bumblebee node rs-bumblebee
 exit
