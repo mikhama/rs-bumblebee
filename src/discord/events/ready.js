@@ -19,8 +19,8 @@ module.exports = ({
     .map(channel => getChannel(client, channel))))
     .filter(channel => channel);
 
-  const messages = channels
-    .map(channel => getMessages(channel, limit))
+  const messages = (await Promise.all(channels
+    .map(channel => getMessages(channel, limit))))
     .reduce((acc, cur) => acc.concat(cur), []);
 
   const savedTimestamp = (await readTime()).timestamp;
