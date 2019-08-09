@@ -1,8 +1,6 @@
 module.exports = ({ client }) => ({
   description: 'Show this message',
-  method: () => {
-    const { TELEGRAM_ADMIN_CHANNEL_ID } = process.env;
-
+  method: ({ chat: { id } }) => {
     // eslint-disable-next-line global-require
     const events = require('./index');
 
@@ -10,6 +8,6 @@ module.exports = ({ client }) => ({
       .map(eventName => `/${eventName} : ${events[eventName]({ client }).description}`)
       .join('\n');
 
-    client.sendMessage(TELEGRAM_ADMIN_CHANNEL_ID, message, { parse_mode: 'Markdown' });
+    client.sendMessage(id, message, { parse_mode: 'Markdown' });
   },
 });
