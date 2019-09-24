@@ -23,6 +23,7 @@ jobs:
 branches:
   only:
     - master
+    - develop
 addons:
   ssh_known_hosts:
   - 68.183.2.140
