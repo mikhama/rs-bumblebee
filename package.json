@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "lint": "eslint ./src",
-    "test": "",
+    "test": "jest",
     "build": "webpack",
     "deploy": "bash scripts/deploy.sh"
   },

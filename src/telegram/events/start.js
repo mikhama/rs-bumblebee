@@ -7,7 +7,8 @@ module.exports = ({ client }) => ({
     },
     chat: { id },
   }) => {
-    const message = `Hello *${firstName} ${lastName}*! Glad to see you.\nType /help for available options.`;
+    const userName = lastName ? `${firstName} ${lastName}` : firstName;
+    const message = `Hello *${userName}*! Glad to see you.\nType /help for available options.`;
 
     client.sendMessage(id, message, { parse_mode: 'Markdown' });
   },
