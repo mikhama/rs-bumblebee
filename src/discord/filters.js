@@ -1,26 +1,26 @@
-const escapeMarkdownCharacters = (message) => {
-  // TODO: Think how to improve the escaping rules. https://stackoverflow.com/questions/40626896/telegram-does-not-escape-some-markdown-characters
-  const underscorRegexp = /_/g;
+// const escapeMarkdownCharacters = (message) => {
+//   // TODO: Think how to improve the escaping rules. https://stackoverflow.com/questions/40626896/telegram-does-not-escape-some-markdown-characters
+//   const underscorRegexp = /_/g;
 
-  return message.replace(underscorRegexp, '\\_');
-};
+//   return message.replace(underscorRegexp, '\\_');
+// };
 
-const replaceMarkdownSymbols = (message) => {
-  const discordBoldRegexp = new RegExp('\\*{2}', 'g');
-  const discordItalicRegexp = new RegExp('\\*', 'g');
-  const tempReplacerRegexp = new RegExp('_{3}', 'g');
+// const replaceMarkdownSymbols = (message) => {
+//   const discordBoldRegexp = new RegExp('\\*{2}', 'g');
+//   const discordItalicRegexp = new RegExp('\\*', 'g');
+//   const tempReplacerRegexp = new RegExp('_{3}', 'g');
 
-  const telegramBoldChar = '*';
-  const telegramItalicChar = '_';
-  const tempReplacer = '___';
+//   const telegramBoldChar = '*';
+//   const telegramItalicChar = '_';
+//   const tempReplacer = '___';
 
-  const newMessage = message
-    .replace(discordBoldRegexp, tempReplacer)
-    .replace(discordItalicRegexp, telegramItalicChar)
-    .replace(tempReplacerRegexp, telegramBoldChar);
+//   const newMessage = message
+//     .replace(discordBoldRegexp, tempReplacer)
+//     .replace(discordItalicRegexp, telegramItalicChar)
+//     .replace(tempReplacerRegexp, telegramBoldChar);
 
-  return newMessage;
-};
+//   return newMessage;
+// };
 
 const replaceIds = ({
   message, mentions, idPrefix, namePrefix,
@@ -44,10 +44,10 @@ const filterMentions = mentions => [...mentions]
 module.exports.filterDiscordMessage = (message) => {
   const {
     id,
-    channel,
     content,
-    author,
-    member,
+    channel = {},
+    author = {},
+    member = {},
     mentions,
     createdTimestamp,
     editedTimestamp,
@@ -83,7 +83,7 @@ module.exports.filterDiscordMessage = (message) => {
     },
   ];
 
-  let newContent = escapeMarkdownCharacters(content);
+  let newContent = content; // escapeMarkdownCharacters(content);
 
   replaces.forEach(({ mentionsArr, idPrefix, namePrefix }) => {
     newContent = replaceIds({
@@ -94,7 +94,7 @@ module.exports.filterDiscordMessage = (message) => {
     });
   });
 
-  newContent = replaceMarkdownSymbols(newContent);
+  newContent = content; // replaceMarkdownSymbols(newContent);
 
   return {
     id,
