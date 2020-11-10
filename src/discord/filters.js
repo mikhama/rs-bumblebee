@@ -41,13 +41,13 @@ const filterMentions = mentions => [...mentions]
     return { id, name };
   });
 
-module.exports.filterDiscordMessage = (message) => {
+module.exports.filterDiscordMessage = (message = {}) => {
   const {
     id,
     content,
     channel = {},
     author = {},
-    member = {},
+    member,
     mentions,
     createdTimestamp,
     editedTimestamp,
@@ -59,7 +59,7 @@ module.exports.filterDiscordMessage = (message) => {
     avatar,
   } = author;
 
-  const { nickname } = member;
+  const { nickname } = member || {};
 
   const channelName = channel.name;
   const lastMessageId = channel.lastMessageID;
