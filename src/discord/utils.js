@@ -5,12 +5,12 @@ const { filterDiscordMessage } = require('./filters');
 const {
   TIMEZONE,
   TIME_FORMAT,
-  TELEGRAM_PARSE_MODE,
+  // TELEGRAM_PARSE_MODE,
 } = require('../constants/discord-bridge');
 
 const formatMessage = ({
   username, channelName, content, createdTimestamp, editedTimestamp,
-}) => {
+} = { username: 'Somebody' }) => {
   const timestamp = moment.tz(editedTimestamp || createdTimestamp, TIMEZONE);
   const time = timestamp.format(TIME_FORMAT);
 
@@ -22,26 +22,26 @@ module.exports.sendMessageToTelegram = catcher(async ({
 }) => {
   const { TELEGRAM_CHANNEL_ID } = process.env;
 
-  let telegramMessage;
-  try {
-    telegramMessage = await action({
-      messageId,
-      bot: telegramBot,
-      channelId: TELEGRAM_CHANNEL_ID,
-      message: formatMessage(message),
-      parseMode: TELEGRAM_PARSE_MODE,
-    });
-  } catch (err) {
-    global.console.log('Error =>', err.message);
+  // let telegramMessage;
+  // try {
+  //   telegramMessage = await action({
+  //     messageId,
+  //     bot: telegramBot,
+  //     channelId: TELEGRAM_CHANNEL_ID,
+  //     message: formatMessage(message),
+  //     parseMode: TELEGRAM_PARSE_MODE,
+  //   });
+  // } catch (err) {
+  // global.console.log('Error =>', err.message);
 
-    telegramMessage = await action({
-      messageId,
-      bot: telegramBot,
-      channelId: TELEGRAM_CHANNEL_ID,
-      message: formatMessage(message),
-      parseMode: null,
-    });
-  }
+  const telegramMessage = await action({
+    messageId,
+    bot: telegramBot,
+    channelId: TELEGRAM_CHANNEL_ID,
+    message: formatMessage(message),
+    parseMode: null,
+  });
+  // }
 
   const telegramMessageId = telegramMessage.message_id;
 
