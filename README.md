@@ -1,4 +1,7 @@
 # rs-bumblebee &middot; [![GitHub license](https://img.shields.io/github/license/mikhama/rs-bumblebee)](https://github.com/mikhama/rs-bumblebee/blob/master/LICENSE) [![TravisCI Status](https://travis-ci.org/mikhama/rs-bumblebee.svg?branch=master)](https://travis-ci.org/mikhama/rs-bumblebee)
+
+⚠️ ⚠️ ⚠️ **Moved permanently to [rsschool-app](https://github.com/rolling-scopes/rsschool-app)!** ⚠️ ⚠️ ⚠️
+
 RS Bumblebee is a bridge bot for transfer messages from Discord to Telegram created especially for the Rolling Scopes School
 
 ## Developing
